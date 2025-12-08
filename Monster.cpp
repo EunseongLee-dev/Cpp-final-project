@@ -14,6 +14,19 @@ std::string Monster::GetName() const
 	return Name;
 }
 
+std::string Monster::GetName() const
+s
+s
+s
+s
+s
+s
+s
+s
+s
+s
+
+
 
 void Monster::Attack(Player& target)
 {
