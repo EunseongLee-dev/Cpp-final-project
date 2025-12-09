@@ -7,9 +7,7 @@
   - 스킬 이름
   - 데미지 수치
   - 마나 소모량
-  - 추가 효과(선택)
 
-예시 형태:
 ```cpp
 struct Skill {
     string name;
@@ -22,7 +20,6 @@ struct Skill {
 
 ## 2. Attack 함수에 Skill 적용
 - Attack 함수 내에서 일반 공격 / 스킬 공격을 구분하도록 변경.
-- 스킬 선택 여부는 입력 또는 AI 로직에 따라 분기.
 - 스킬 사용 시:
   - 마나가 충분한지 확인
   - 스킬 데미지를 적용
@@ -31,16 +28,31 @@ struct Skill {
 
 변경된 Attack 개념:
 ```cpp
-void Character::Attack(Character& target, Skill* skill) {
-    if (skill != nullptr) {
-        if (mp >= skill->manaCost) {
-            mp -= skill->manaCost;
-            target.hp -= skill->damage;
-        }
-    } else {
-        target.hp -= this->damage;
-    }
-}
+	if (!IsAlive)
+	{
+		return;
+	}
+	if (!target.IsAlives())
+	{
+		return;
+	}
+
+	static std::random_device rd;
+	static std::mt19937 mt(rd());
+
+	std::uniform_int_distribution<int> ch(0, 1);
+	auto choice = ch(mt);
+
+	switch (choice)
+	{
+	case 0:
+		NormalAttack(target);
+		break;
+
+	case 1:
+		Skill(target);
+		break;
+	}
 ```
 
 ## 3. IsAlive 활용
@@ -48,15 +60,15 @@ void Character::Attack(Character& target, Skill* skill) {
 - 전투 루프에서 계속 체크하여 사망 시 턴 종료 또는 게임 종료 처리.
 예시:
 ```cpp
-if (!target.IsAlive()) {
-    cout << target.name << "은(는) 쓰러졌다!" << endl;
-}
+	if (!IsAlive)
+	{
+		return;
+	}
+	if (!target.IsAlives())
+	{
+		return;
+	}
 ```
 
-## 4. Random 함수 오류 해결
-- seed 문제 및 범위 이슈를 해결.
-- C++11 random 사용 또는 기존 rand() 보정 완성.
-
----
-
-업로드 용으로 정리되었으며, 이 파일은 그대로 GitHub에 push 가능함.
+## 4. cout 출력 조절
+- 출력 순서에 어색함이 있어 공격 함수에서 cout 우선 출력 후 TakeDamage 함수 호출하도록 변경. 
