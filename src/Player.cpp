@@ -1,50 +1,153 @@
 #include "Player.h"
 #include "Monster.h"
+#include <random>
 
-Player::Player(std::string _name, int _hp, int _atk)
+Player::Player(std::string _name, int _hp, int _mp, int _atk)
 	: Name(_name)
 	, Hp(_hp)
 	, MaxHp(_hp)
+	, Mp(_mp)
+	, MaxMp(_mp)
 	, ATK(_atk)
-	// êµ¬í˜„ ì„¤ëª…:
-	// _hpë¥¼ ë©¤ë²„ Hp, MaxHpì— ë‘˜ë‹¤ ìƒì„±ìë¡œ í• ë‹¹í•œ ì´ìœ ëŠ”
-	// Maxhpì—ë§Œ ìƒì„±ìë¡œ ë„£ìœ¼ë©´ ê²°êµ­ ë©¤ë²„ HpëŠ” nullê°’ ì´ë¯€ë¡œ ìƒì„± ë‹¹ì‹œì—ëŠ”
-	// Maxhp,Hp ë©¤ë²„ê°’ì´ ë¬´ì¡°ê±´ ë™ì¼í•œ ìƒí™©ë°–ì— ì—†ìœ¼ë¯€ë¡œ ë§¤ê°œë³€ìˆ˜ë¡œ ë°›ì€ _hpë¥¼ 
-	// ê°ê° ë©¤ë²„ì— ë‘˜ë‹¤ í• ë‹¹í•¨
 {
+	IsAlive = true;
 }
+
 
 std::string Player::GetName() const
 {
 	return Name;
 }
 
-void Player::Attack(Monster& target)
+bool Player::IsAlives() const
 {
-	target.TakeDamage(this->ATK); // this-> ì‘ì„± ì•ˆí•´ë„ ê°€ëŠ¥ 
-	std::cout << "í”Œë ˆì´ì–´ " << "'" << Name << "'" << " ì´(ê°€) "
-		<< "ëª¬ìŠ¤í„° " << "'" << target.GetName() << "'" << " ì„ ê³µê²©!"
-		<< "ë°ë¯¸ì§€: " << ATK << "\n";
-
+	// Attack ÇÔ¼ö Á¶°Ç Ã¼Å©¿ë
+	return IsAlive;
 }
-
-
 
 void Player::Playerstatus() const
 {
-	std::cout << Name << " ì˜ ìŠ¤í…Œì´í„°ìŠ¤\n";
-	std::cout << "í˜„ì¬ ì²´ë ¥: " << Hp << " / " << "ìµœëŒ€ ì²´ë ¥: " << MaxHp << "\n";
-	std::cout << "ê³µê²©ë ¥: " << ATK << "\n";
+	std::cout << Name << " ÀÇ ½ºÅ×ÀÌÅÍ½º\n";
+	std::cout << "ÇöÀç Ã¼·Â: " << Hp << " / " << "ÃÖ´ë Ã¼·Â: " << MaxHp << "\n";
+	std::cout << "ÇöÀç ¸¶³ª: " << Mp << " / " << "ÃÖ´ë ¸¶³ª: " << MaxMp << "\n";
+	std::cout << "°ø°İ·Â: " << ATK << "\n\n";
+}
+
+void Player::NormalAttack(Monster& target)
+{
+	std::cout << "ÇÃ·¹ÀÌ¾î " << "'" << Name << "'" << " ÀÌ(°¡) "
+		<< "¸ó½ºÅÍ " << "'" << target.GetName() << "'" << " À» °ø°İ!"
+		<< "µ¥¹ÌÁö: " << ATK << "\n\n";
+
+	target.TakeDamage(this->ATK);
+}
+
+void Player::Skill(Monster& target)
+{
+	// ·£´ı Á¶°Ç
+	static std::random_device rd;
+	static std::mt19937 mt(rd());
+	
+	// ·£´ı ½ºÅ³ ¼±ÅÃ
+	std::uniform_int_distribution<int> select(0, 1);
+	auto skill_select = select(mt);
+
+	// ½ºÅ³ ¸¶³ª ¼Ò¸ğ·®
+	std::uniform_int_distribution<int> sk_1(10, 20);
+	auto skill_1 = sk_1(mt);
+	std::uniform_int_distribution<int> sk_2(20, 30);
+	auto skill_2 = sk_2(mt);
+
+	switch (skill_select)
+	{
+	case 0:
+		if (Mp < skill_1)
+		{
+			std::cout << "ÇÃ·¹ÀÌ¾îÀÇ ¸¶³ª °¡ ºÎÁ·ÇÕ´Ï´Ù. (¸¶³ª: " << Mp << ")\n";
+		}
+		else
+		{
+			// ½ºÅ³ µ¥¹ÌÁö ¼³Á¤
+			std::uniform_int_distribution<int> sk_1(20, 30);
+			auto skill1_damage = sk_1(mt);
+
+			Mp -= skill_1;
+		
+			std::cout << "ÇÃ·¹ÀÌ¾î " << "'" << Name << "'" << " ÀÌ(°¡) "
+				<< "¸ó½ºÅÍ " << "'" << target.GetName() << "'" << " À» °ø°İ! "
+				<< "½ºÅ³_1 µ¥¹ÌÁö: " << skill1_damage << "\n\n";
+
+			target.TakeDamage(skill1_damage);
+		}
+		break;
+
+	case 1:
+		if (Mp < skill_2)
+		{
+			std::cout << "ÇÃ·¹ÀÌ¾îÀÇ ¸¶³ª °¡ ºÎÁ·ÇÕ´Ï´Ù. (¸¶³ª: " << Mp << ")\n\n";
+		}
+		else
+		{
+			std::uniform_int_distribution<int> sk_2(30, 40);
+			auto skill2_damage = sk_2(mt);
+
+			Mp -= skill_2;
+
+			std::cout << "ÇÃ·¹ÀÌ¾î " << "'" << Name << "'" << " ÀÌ(°¡) "
+				<< "¸ó½ºÅÍ " << "'" << target.GetName() << "'" << " À» °ø°İ! "
+				<< "½ºÅ³_2 µ¥¹ÌÁö: " << skill2_damage << "\n\n";
+
+			target.TakeDamage(skill2_damage);
+		}
+		break;
+
+	}
+
+
+}
+
+void Player::Attack(Monster& target)
+{
+	if (!IsAlive)
+	{
+		return;
+	}
+	if (!target.IsAlives())
+	{
+		return;
+	}
+
+	static std::random_device rd;
+	static std::mt19937 mt(rd());
+
+	std::uniform_int_distribution<int> ch(0, 1);
+	auto choice = ch(mt);
+
+	switch (choice)
+	{
+	case 0:
+		NormalAttack(target);
+		break;
+
+	case 1:
+		Skill(target);
+		break;
+	}
 }
 
 void Player::TakeDamage(int damage)
 {
 	Hp -= damage;
-	if (Hp < 0)
+
+	std::cout << Name << "ÀÌ(°¡) " << damage << " µ¥¹ÌÁö¸¦ ÀÔ¾ú½À´Ï´Ù! "
+		<< "(Hp: " << Hp << " / " << MaxHp << ")\n\n";
+
+	if (Hp <= 0)
 	{
 		Hp = 0;
-		std::cout << "í”Œë ˆì´ì–´ " << "'" << Name << "'" << "ì˜ ë‚¨ì€ ì²´ë ¥:" << Hp << " ì‚¬ë§\n";
+		IsAlive = false;
+		std::cout << "ÇÃ·¹ÀÌ¾î " << "'" << Name << "'" << "ÀÇ ³²Àº Ã¼·Â:" << Hp << " »ç¸Á\n\n";
 	}
-	std::cout << "í˜„ì¬ " << Name << "ì˜ ë‚¨ì€ ì²´ë ¥: " << Hp << "\n";
+
 }
 

@@ -1,12 +1,16 @@
 #include "Monster.h"
 #include "Player.h"
+#include <random>
 
-Monster::Monster(std::string _name, int _hp, int _atk)
-	:Name(_name)
-	,Hp(_hp)
-	,MaxHp(_hp)
-	,ATK(_atk)
+Monster::Monster(std::string _name, int _hp, int _mp, int _atk)
+	: Name(_name)
+	, Hp(_hp)
+	, MaxHp(_hp)
+	, Mp(_mp)
+	, MaxMp(_mp)
+	, ATK(_atk)
 {
+	IsAlive = true;
 }
 
 std::string Monster::GetName() const
@@ -14,29 +18,132 @@ std::string Monster::GetName() const
 	return Name;
 }
 
-
-void Monster::Attack(Player& target)
+bool Monster::IsAlives() const
 {
-	target.TakeDamage(ATK);
-	std::cout << "ëª¬ìŠ¤í„° " << "'" << Name << "'" << " ì´(ê°€) "
-		<< "í”Œë ˆì´ì–´ " << "'" << target.GetName() << "'" << " ì„ ê³µê²©!"
-		<< "ë°ë¯¸ì§€: " << ATK << "\n";
+	return IsAlive;
 }
 
 void Monster::Monsterstatus() const
 {
-	std::cout << Name << " ì˜ ìŠ¤í…Œì´í„°ìŠ¤\n";
-	std::cout << "í˜„ìž¬ ì²´ë ¥: " << Hp << " / " << "ìµœëŒ€ ì²´ë ¥: " << MaxHp << "\n";
-	std::cout << "ê³µê²©ë ¥: " << ATK << "\n";
+	std::cout << Name << " ÀÇ ½ºÅ×ÀÌÅÍ½º\n";
+	std::cout << "ÇöÀç Ã¼·Â: " << Hp << " / " << "ÃÖ´ë Ã¼·Â: " << MaxHp << "\n";
+	std::cout << "°ø°Ý·Â: " << ATK << "\n\n";
+}
+
+void Monster::NormalAttack(Player& target)
+{
+	std::cout << "¸ó½ºÅÍ " << "'" << Name << "'" << " ÀÌ(°¡) "
+		<< "ÇÃ·¹ÀÌ¾î " << "'" << target.GetName() << "'" << " À» °ø°Ý!"
+		<< "µ¥¹ÌÁö: " << ATK << "\n\n";
+
+	target.TakeDamage(ATK);
+}
+
+void Monster::Skill(Player& target)
+{
+	// ·£´ý Á¶°Ç
+	static std::random_device rd;
+	static std::mt19937 mt(rd());
+
+	// ·£´ý ½ºÅ³ ¼±ÅÃ
+	std::uniform_int_distribution<int> select(0, 1);
+	auto skill_select = select(mt);
+
+	// ½ºÅ³ ¸¶³ª ¼Ò¸ð·®
+	std::uniform_int_distribution<int> sk_1(10, 20);
+	auto skill_1 = sk_1(mt);
+	std::uniform_int_distribution<int> sk_2(20, 30);
+	auto skill_2 = sk_2(mt);
+
+	switch (skill_select)
+	{
+	case 0:
+		if (Mp < skill_1)
+		{
+			std::cout << "¸ó½ºÅÍÀÇ ¸¶³ª °¡ ºÎÁ·ÇÕ´Ï´Ù. (¸¶³ª: " << Mp << ")\n";
+		}
+		else
+		{
+			// ½ºÅ³ µ¥¹ÌÁö ¼³Á¤
+			std::uniform_int_distribution<int> sk_1(20, 30);
+			auto skill1_damage = sk_1(mt);
+
+			Mp -= skill_1;
+
+			std::cout << "¸ó½ºÅÍ " << "'" << Name << "'" << " ÀÌ(°¡) "
+				<< "ÇÃ·¹ÀÌ¾î " << "'" << target.GetName() << "'" << " À» °ø°Ý! "
+				<< "½ºÅ³_1 µ¥¹ÌÁö: " << skill1_damage << "\n\n";
+
+			target.TakeDamage(skill1_damage);
+		}
+		break;
+
+	case 1:
+		if (Mp < skill_2)
+		{
+			std::cout << "¸ó½ºÅÍÀÇ ¸¶³ª °¡ ºÎÁ·ÇÕ´Ï´Ù. (¸¶³ª: " << Mp << ")\n\n";
+		}
+		else
+		{
+			std::uniform_int_distribution<int> sk_2(30, 40);
+			auto skill2_damage = sk_2(mt);
+
+			Mp -= skill_2;
+
+			std::cout << "¸ó½ºÅÍ " << "'" << Name << "'" << " ÀÌ(°¡) "
+				<< "ÇÃ·¹ÀÌ¾î " << "'" << target.GetName() << "'" << " À» °ø°Ý! "
+				<< "½ºÅ³_2 µ¥¹ÌÁö: " << skill2_damage << "\n\n";
+
+			target.TakeDamage(skill2_damage);
+		}
+		break;
+
+	}
+
+}
+
+void Monster::Attack(Player& target)
+{
+	if (!IsAlive)
+	{
+		return;
+	}
+	if (!target.IsAlives())
+	{
+		return;
+	}
+
+	static std::random_device rd;
+	static std::mt19937 mt(rd());
+
+	std::uniform_int_distribution<int> ch(0, 1);
+	auto choice = ch(mt);
+
+	switch (choice)
+	{
+	case 0:
+		NormalAttack(target);
+		break;
+
+	case 1:
+		Skill(target);
+		break;
+	}
+
 }
 
 void Monster::TakeDamage(int damage)
 {
 	Hp -= damage;
-	if (Hp < 0)
+
+	std::cout << Name << "ÀÌ(°¡) " << damage << " µ¥¹ÌÁö¸¦ ÀÔ¾ú½À´Ï´Ù! "
+		<< "(Hp: " << Hp << " / " << MaxHp << ")\n\n";
+
+	if (Hp <= 0)
 	{
 		Hp = 0;
-		std::cout << "ëª¬ìŠ¤í„° " << "'" << Name << "'" << "ì˜ ë‚¨ì€ ì²´ë ¥:" << Hp << " ì‚¬ë§\n";
+		IsAlive = false;
+		std::cout << "¸ó½ºÅÍ " << "'" << Name << "'" << "ÀÇ ³²Àº Ã¼·Â:" << Hp << " »ç¸Á\n";
 	}
-	std::cout << "í˜„ìž¬ " << Name << "ì˜ ë‚¨ì€ ì²´ë ¥: " << Hp << "\n";
+	
 }
