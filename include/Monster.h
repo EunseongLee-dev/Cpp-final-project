@@ -9,17 +9,26 @@ private:
 	std::string Name;
 	int Hp;
 	int MaxHp;
+	int Mp;
+	int MaxMp;
 	int ATK;
+	bool IsAlive;
 
 public:
 
-	Monster(std::string _name, int _hp, int _atk);
+	Monster(std::string _name, int _hp, int _mp, int _atk);
 
 	std::string GetName() const;
 
-	void Attack(Player& target);
+	bool IsAlives() const;
 
 	void Monsterstatus() const;
+
+	void NormalAttack(Player& target);
+
+	void Skill(Player& target);
+
+	void Attack(Player& target);
 
 	void TakeDamage(int damage);
 
