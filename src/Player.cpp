@@ -21,9 +21,11 @@ std::string Player::GetName() const
 
 bool Player::IsAlives() const
 {
-	// Attack 함수 조건 체크용
+	
 	return IsAlive;
 }
+
+
 
 void Player::Playerstatus() const
 {
@@ -75,7 +77,7 @@ void Player::Skill(Monster& target)
 		
 			std::cout << "플레이어 " << "'" << Name << "'" << " 이(가) "
 				<< "몬스터 " << "'" << target.GetName() << "'" << " 을 공격! "
-				<< "스킬_1 데미지: " << skill1_damage << "\n\n";
+				<< "공격 스킬_1 데미지: " << skill1_damage << "\n\n";
 
 			target.TakeDamage(skill1_damage);
 		}
@@ -95,7 +97,7 @@ void Player::Skill(Monster& target)
 
 			std::cout << "플레이어 " << "'" << Name << "'" << " 이(가) "
 				<< "몬스터 " << "'" << target.GetName() << "'" << " 을 공격! "
-				<< "스킬_2 데미지: " << skill2_damage << "\n\n";
+				<< "공격 스킬_2 데미지: " << skill2_damage << "\n\n";
 
 			target.TakeDamage(skill2_damage);
 		}
@@ -108,14 +110,7 @@ void Player::Skill(Monster& target)
 
 void Player::Attack(Monster& target)
 {
-	if (!IsAlive)
-	{
-		return;
-	}
-	if (!target.IsAlives())
-	{
-		return;
-	}
+	
 
 	static std::random_device rd;
 	static std::mt19937 mt(rd());

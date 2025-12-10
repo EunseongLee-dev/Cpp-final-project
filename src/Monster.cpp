@@ -23,6 +23,8 @@ bool Monster::IsAlives() const
 	return IsAlive;
 }
 
+
+
 void Monster::Monsterstatus() const
 {
 	std::cout << Name << " 의 스테이터스\n";
@@ -104,14 +106,6 @@ void Monster::Skill(Player& target)
 
 void Monster::Attack(Player& target)
 {
-	if (!IsAlive)
-	{
-		return;
-	}
-	if (!target.IsAlives())
-	{
-		return;
-	}
 
 	static std::random_device rd;
 	static std::mt19937 mt(rd());
