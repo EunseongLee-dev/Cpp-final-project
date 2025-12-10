@@ -32,4 +32,6 @@ public:
 	void Attack(Monster& target);
 
 	void TakeDamage(int damage);
+
+	
 };
