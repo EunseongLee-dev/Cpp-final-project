@@ -63,6 +63,8 @@ void Monster::Skill(Player& target)
 		if (Mp < skill_1)
 		{
 			std::cout << "몬스터의 마나 가 부족합니다. (마나: " << Mp << ")\n";
+			std::cout << "일반 공격으로 전환\n\n";
+			NormalAttack(target);
 		}
 		else
 		{
@@ -84,6 +86,8 @@ void Monster::Skill(Player& target)
 		if (Mp < skill_2)
 		{
 			std::cout << "몬스터의 마나 가 부족합니다. (마나: " << Mp << ")\n\n";
+			std::cout << "일반 공격으로 전환\n\n";
+			NormalAttack(target);
 		}
 		else
 		{
@@ -130,14 +134,20 @@ void Monster::TakeDamage(int damage)
 {
 	Hp -= damage;
 
-	std::cout << Name << "이(가) " << damage << " 데미지를 입었습니다! "
-		<< "(Hp: " << Hp << " / " << MaxHp << ")\n\n";
-
 	if (Hp <= 0)
 	{
 		Hp = 0;
 		IsAlive = false;
-		std::cout << "몬스터 " << "'" << Name << "'" << "의 남은 체력:" << Hp << " 사망\n";
 	}
-	
+
+	std::cout << Name << "이(가) " << damage << " 데미지를 입었습니다! "
+		<< "(Hp: " << Hp << " / " << MaxHp << ")\n\n";
+
+
+	if (!IsAlive)
+	{
+		std::cout << "몬스터 " << "'" << Name << "'" << "의 남은 체력:" << Hp << " 사망\n\n";
+		
+	}
 }
+

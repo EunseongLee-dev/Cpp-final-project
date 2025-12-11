@@ -1,14 +1,15 @@
 #include "GameManager.h"
 #include "Player.h"
 #include "Monster.h"
+#include "Item.h"
 #include <iostream>
 
 GameManager::GameManager(Player* _player, std::vector<Monster*> _monster)
 	: Playerr(_player)
 	, Monsterr(_monster)
 {
-	isGameover = true;
-	turnCount = 0;
+	isGameover = false;
+	currentMonster = Monsterr[0];
 }
 
 void GameManager::StartGame()
@@ -37,14 +38,13 @@ void GameManager::GameLoop()
 
 void GameManager::ProcessTurn()
 {
-	for(auto it : Monsterr)
-	{
-		Playerr->Attack(*it);
-	}
+	Monster* cur = Monsterr[0];
 
-	for (auto it : Monsterr)
+	Playerr->Attack(*cur);
+
+	if (cur->IsAlives())
 	{
-		it->Attack(*Playerr);
+		cur->Attack(*Playerr);
 	}
 }
 
@@ -52,40 +52,39 @@ void GameManager::CheckBattleResult()
 {
 	if (!Playerr->IsAlives())
 	{
-		isGameover = false;
+		isGameover = true;
 		return;
 	}
 
-	bool anyMonsterAlive = true;
-
-	for (auto it : Monsterr)
+	if (!Monsterr[0]->IsAlives())
 	{
-		if (it->IsAlives())
-		{
-			anyMonsterAlive = false;
-			break;
-		}
-	}
+		delete Monsterr[0];
+		Monsterr.erase(Monsterr.begin());
 
-	if (!anyMonsterAlive)
-	{
-		isGameover = true;
+		GiveRandomItem();
+
+		SpawnMonster();
 	}
 }
 
 void GameManager::SpawnMonster()
 {
-
+	Monster* newMonster = new Monster("고블린", 50, 40, 10);
+	Monsterr.push_back(newMonster);
 }
 
 void GameManager::PrintStatus() const
 {
 	Playerr->Playerstatus();
 
-	for (auto it : Monsterr)
-	{
-		it->Monsterstatus();
-	}
+	Monsterr[0]->Monsterstatus();
+}
+
+void GameManager::GiveRandomItem()
+{
+	Item* potion = new Item("체력 포션", "Heal", 30);
+	Playerr->UseItem(potion);
+	delete potion;
 }
 
 

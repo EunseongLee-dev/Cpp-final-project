@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Monster.h"
+#include "Item.h"
 #include <random>
 
 Player::Player(std::string _name, int _hp, int _mp, int _atk)
@@ -66,6 +67,8 @@ void Player::Skill(Monster& target)
 		if (Mp < skill_1)
 		{
 			std::cout << "플레이어의 마나 가 부족합니다. (마나: " << Mp << ")\n";
+			std::cout << "일반 공격으로 전환\n\n";
+			NormalAttack(target);
 		}
 		else
 		{
@@ -87,6 +90,8 @@ void Player::Skill(Monster& target)
 		if (Mp < skill_2)
 		{
 			std::cout << "플레이어의 마나 가 부족합니다. (마나: " << Mp << ")\n\n";
+			std::cout << "일반 공격으로 전환\n\n";
+			NormalAttack(target);
 		}
 		else
 		{
@@ -102,10 +107,7 @@ void Player::Skill(Monster& target)
 			target.TakeDamage(skill2_damage);
 		}
 		break;
-
 	}
-
-
 }
 
 void Player::Attack(Monster& target)
@@ -134,15 +136,42 @@ void Player::TakeDamage(int damage)
 {
 	Hp -= damage;
 
-	std::cout << Name << "이(가) " << damage << " 데미지를 입었습니다! "
-		<< "(Hp: " << Hp << " / " << MaxHp << ")\n\n";
-
 	if (Hp <= 0)
 	{
 		Hp = 0;
 		IsAlive = false;
-		std::cout << "플레이어 " << "'" << Name << "'" << "의 남은 체력:" << Hp << " 사망\n\n";
 	}
 
+	std::cout << Name << "이(가) " << damage << " 데미지를 입었습니다! "
+		<< "(Hp: " << Hp << " / " << MaxHp << ")\n\n";
+
+	if (!IsAlive)
+	{
+		std::cout << "플레이어 " << "'" << Name << "'" << "의 남은 체력:" << Hp << " 사망\n\n";
+	}
+}
+
+void Player::UseItem(Item* item)
+{
+	std::string Type = item->GetType();
+
+	if (Type == "Heal")
+	{
+		Hp += item->GetValue();
+		std::cout << "플레이어 " << Name << "이 '" << item->GetName() << "'을 사용했습니다.\n"
+			<< "Hp +" << item->GetValue()
+			<< " (Hp: " << Hp << " / " << MaxHp << ")\n\n";
+	}
+	else if (Type == "Mana")
+	{
+		std::cout << "플레이어 " << Name << "이 '" << item->GetName() << "'을 사용했습니다.\n"
+			<< "Mp +" << item->GetValue() << "\n\n";
+	}
+	else if (Type == "Atk")
+	{
+		std::cout << "플레이어 " << Name << "이 '" << item->GetName() << "'을 사용했습니다.\n"
+			<< "공격력 +" << item->GetValue() << "\n\n";
+	}
+	
 }
 

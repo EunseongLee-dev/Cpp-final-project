@@ -1,23 +1,21 @@
 #include <iostream>
 #include "Player.h"
 #include "Monster.h"
+#include "GameManager.h"
+#include <vector>
 
 
 int main()
 {
-	Player Play1("용사", 80, 50, 10);
-	Monster Mons1("슬라임", 60, 40, 10);
+	Player* playr = new Player("영웅", 100, 60, 15);
+	Monster* slime = new Monster("슬라임", 40, 30, 10);
 
-	Play1.Playerstatus();
-	Mons1.Monsterstatus();
-	Play1.Attack(Mons1);
-	Mons1.Attack(Play1);
-	Play1.Attack(Mons1);
-	Mons1.Attack(Play1);
-	Play1.Attack(Mons1);
-	Mons1.Attack(Play1);
-	Play1.Playerstatus();
-	Mons1.Monsterstatus();
+	std::vector<Monster*> monst;
+	monst.push_back(slime);
 
+	GameManager manager(playr, monst);
+	manager.StartGame();
+
+	delete playr;
 	return 0;
 }
