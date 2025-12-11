@@ -1,8 +1,9 @@
 #pragma once
 #include <iostream>
-#include <random>
 
 class Monster;
+
+class Item;
 
 class Player
 {
@@ -32,6 +33,8 @@ public:
 	void Attack(Monster& target);
 
 	void TakeDamage(int damage);
+
+	void UseItem(Item* item);
 
 	
 };

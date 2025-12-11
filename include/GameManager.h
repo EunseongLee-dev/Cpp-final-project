@@ -10,7 +10,7 @@ private:
 	Player* Playerr;
 	std::vector<Monster*> Monsterr;
 	bool isGameover;
-	int turnCount;
+	Monster* currentMonster;
 
 public:
 	GameManager(Player* _player, std::vector<Monster*> _monster);
@@ -26,6 +26,8 @@ public:
 	void SpawnMonster();
 
 	void PrintStatus() const;
+
+	void GiveRandomItem();
 
 	
 

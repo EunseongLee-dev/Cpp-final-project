@@ -3,6 +3,8 @@
 
 class Player;
 
+class Item;
+
 class Monster
 {
 private:
@@ -31,5 +33,7 @@ public:
 	void Attack(Player& target);
 
 	void TakeDamage(int damage);
+
+	void DropItem(Item* item);
 
 };
