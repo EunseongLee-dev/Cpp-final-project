@@ -34,6 +34,6 @@ public:
 
 	void TakeDamage(int damage);
 
-	void DropItem(Item* item);
+	std::unique_ptr<Item> DropItem();
 
 };

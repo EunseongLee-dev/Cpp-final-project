@@ -1,5 +1,5 @@
 #pragma once
-#include <iostream>
+#include "Inventory.h"
 
 class Monster;
 
@@ -15,6 +15,7 @@ private:
 	int MaxMp;
 	int ATK;
 	bool IsAlive;
+	Inventory inventory;
 
 public:
 
@@ -36,5 +37,10 @@ public:
 
 	void UseItem(Item* item);
 
+	void AddItem(std::unique_ptr<Item> item);
+
+	void UseItemFromInventory(int index);
+
+	void PrintInventory() const;
 	
 };
