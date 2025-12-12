@@ -2,6 +2,8 @@
 #include "Monster.h"
 #include "Item.h"
 #include <random>
+#include <memory>
+#include <string>
 
 Player::Player(std::string _name, int _hp, int _mp, int _atk)
 	: Name(_name)
@@ -158,20 +160,58 @@ void Player::UseItem(Item* item)
 	if (Type == "Heal")
 	{
 		Hp += item->GetValue();
+		if (Hp > MaxHp)
+		{
+			Hp = MaxHp;
+		}
 		std::cout << "플레이어 " << Name << "이 '" << item->GetName() << "'을 사용했습니다.\n"
 			<< "Hp +" << item->GetValue()
 			<< " (Hp: " << Hp << " / " << MaxHp << ")\n\n";
 	}
 	else if (Type == "Mana")
 	{
+		Mp += item->GetValue();
+		if (Mp > MaxMp)
+		{
+			Mp = MaxMp;
+		}
 		std::cout << "플레이어 " << Name << "이 '" << item->GetName() << "'을 사용했습니다.\n"
-			<< "Mp +" << item->GetValue() << "\n\n";
+			<< "Mp +" << item->GetValue() 
+			<< " (Mp: " << Mp << " / " << MaxHp << ")\n\n";
 	}
 	else if (Type == "Atk")
 	{
+		ATK += item->GetValue();
 		std::cout << "플레이어 " << Name << "이 '" << item->GetName() << "'을 사용했습니다.\n"
-			<< "공격력 +" << item->GetValue() << "\n\n";
+			<< "공격력 +" << item->GetValue()
+			<< " (ATK: " << ATK << ")\n\n";
 	}
 	
 }
+
+void Player::AddItem(std::unique_ptr<Item> item)
+{
+	inventory.AddItem(std::move(item));
+}
+
+void Player::UseItemFromInventory(int index)
+{
+	if (index < 0 || index >= inventory.Count())
+	{
+		std::cout << "잘못된 인덱스입니다.\n\n";
+		return;
+	}
+	
+	Item* item = inventory.GetItem(index);
+	UseItem(item);
+	inventory.RemoveItem(index);
+}
+
+void Player::PrintInventory() const
+{
+	inventory.PrintInventory();
+}
+
+
+
 

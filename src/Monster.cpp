@@ -1,6 +1,9 @@
 #include "Monster.h"
 #include "Player.h"
+#include "Item.h"
 #include <random>
+#include <memory>
+#include <string>
 
 Monster::Monster(std::string _name, int _hp, int _mp, int _atk)
 	: Name(_name)
@@ -148,6 +151,33 @@ void Monster::TakeDamage(int damage)
 	{
 		std::cout << "몬스터 " << "'" << Name << "'" << "의 남은 체력:" << Hp << " 사망\n\n";
 		
+	}
+}
+
+std::unique_ptr<Item> Monster::DropItem()
+{
+	static std::random_device rd;
+	static std::mt19937 mt(rd());
+
+	std::uniform_int_distribution<int> ch(0, 2);
+	auto choice = ch(mt);
+
+	switch (choice)
+	{
+	case 0:
+		return std::make_unique<Item>("체력 포션", "Heal", 30);
+		break;
+		
+	case 1:
+		return std::make_unique<Item>("마나 포션", "Mana", 20);
+		break;
+
+	case 2:
+		return std::make_unique<Item>("공격력 증가 포션", "Atk", 10);
+		break;
+
+	default:
+		return std::make_unique<Item>("기본 아이템", "None", 0);
 	}
 }
 
