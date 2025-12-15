@@ -9,11 +9,15 @@ Player::Player(std::string _name, int _hp, int _mp, int _atk)
 	: Name(_name)
 	, Hp(_hp)
 	, MaxHp(_hp)
+	, BaseMaxHp(_hp)
 	, Mp(_mp)
 	, MaxMp(_mp)
 	, ATK(_atk)
+	, BaseATK(_atk)
 {
 	IsAlive = true;
+	equippedWeapon.reset();
+	equippedArmor.reset();
 }
 
 
@@ -186,6 +190,21 @@ void Player::UseItem(Item* item)
 			<< "공격력 +" << item->GetValue()
 			<< " (ATK: " << ATK << ")\n\n";
 	}
+	else if (Type == "Weapon")
+	{
+		ATK += item->GetATKBonus();
+		std::cout << "플레이어 " << Name << "이 '" << item->GetName() << "'을 착용했습니다.\n"
+			<< "공격력 +" << item->GetValue()
+			<< " (ATK: " << ATK << ")\n\n";
+	}
+	else if (Type == "Armor")
+	{
+		MaxHp += item->GetHpBonus();
+		std::cout << "플레이어 " << Name << "이 '" << item->GetName() << "'을 착용했습니다.\n"
+			<< "MaxHp +" << item->GetValue()
+			<< " (Hp: " << Hp << " / " << MaxHp << ")\n\n";
+	}
+
 	
 }
 
@@ -210,6 +229,79 @@ void Player::UseItemFromInventory(int index)
 void Player::PrintInventory() const
 {
 	inventory.PrintInventory();
+}
+
+void Player::EquipItemFromInventory(int index)
+{
+	if (index < 0 || index >= inventory.Count())
+	{
+		std::cout << "잘못된 인덱스입니다.\n\n";
+		return;
+	}
+	
+	Item* item = inventory.GetItem(index);
+	if (!item->IsEquipable())
+	{
+		std::cout << "착용 불가능한 아이템 입니다.\n\n";
+		return;
+	}
+	if (item->GetType() == "Weapon")
+	{
+		if (equippedWeapon)
+		{
+			int menu;
+			std::cout << "현재 착용 중인 무기가 있습니다.\n"
+				<< "1. 착용 중인 장비를 교체한다: \n"
+				<< "2. 이전 메뉴: ";
+			std::cin >> menu;
+
+			if (menu == 1)
+			{
+				UnequipWeapon();
+				UseItem(item);
+				return;
+			}
+			else if (menu == 2)
+			{
+				return;
+			}
+		}
+	}
+	if (item->GetType() == "Armor")
+	{
+		if (equippedArmor)
+		{
+			int menu;
+			std::cout << "현재 착용 중인 무기가 있습니다.\n"
+				<< "1. 착용 중인 장비를 교체한다: \n"
+				<< "2. 이전 메뉴: ";
+			std::cin >> menu;
+
+			if (menu == 1)
+			{
+				UnequipArmor();
+				UseItem(item);
+				return;
+			}
+			else if (menu == 2)
+			{
+				return;
+			}
+		}
+	}
+	UseItem(item);
+}
+
+void Player::UnequipWeapon()
+{
+	ATK = BaseATK;
+	inventory.AddItem(std::move(equippedWeapon));
+}
+
+void Player::UnequipArmor()
+{
+	MaxHp = BaseMaxHp;
+	inventory.AddItem(std::move(equippedArmor));
 }
 
 

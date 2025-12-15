@@ -179,5 +179,8 @@ std::unique_ptr<Item> Monster::DropItem()
 	default:
 		return std::make_unique<Item>("기본 아이템", "None", 0);
 	}
+
+	std::uniform_int_distribution<int> eq(0, 4);
+	auto eqchoice = eq(mt);
 }
 

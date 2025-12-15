@@ -67,7 +67,8 @@ void GameManager::ProcessTurn()
 	{
 		Playerr->PrintInventory();
 		int menu;
-		std::cout << "1.아이템 사용: \n" << "2.인벤토리 사용 취소(공격 전환): \n";
+		std::cout << "1.아이템 사용: \n" << "2. 장비 착용: \n"
+			<< "3.인벤토리 사용 취소(공격 전환): \n";
 		std::cin >> menu;
 
 		if (menu == 1)
@@ -79,6 +80,13 @@ void GameManager::ProcessTurn()
 		}
 		else if (menu == 2)
 		{
+			int item;
+			std::cout << "\n착용 할 장비 번호: ";
+			std::cin >> item;
+			Playerr->UseItemFromInventory(item);
+		}
+		else if (menu == 3)
+		{
 			Playerr->Attack(*cur);
 
 			if (cur->IsAlives())
@@ -86,8 +94,6 @@ void GameManager::ProcessTurn()
 				cur->Attack(*Playerr);
 			}
 		}
-
-
 	}
 }
 
