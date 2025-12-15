@@ -1,9 +1,8 @@
 #pragma once
 #include "Inventory.h"
+#include "Item.h"
 
 class Monster;
-
-class Item;
 
 class Player
 {
@@ -11,11 +10,15 @@ private:
 	std::string Name;
 	int Hp;
 	int MaxHp;
+	int BaseMaxHp;
 	int Mp;
 	int MaxMp;
 	int ATK;
+	int BaseATK;
 	bool IsAlive;
 	Inventory inventory;
+	std::unique_ptr<Weapon> equippedWeapon;
+	std::unique_ptr<Armor> equippedArmor;
 
 public:
 
@@ -42,5 +45,10 @@ public:
 	void UseItemFromInventory(int index);
 
 	void PrintInventory() const;
+
+	void EquipItemFromInventory(int index);
 	
+	void UnequipWeapon();
+
+	void UnequipArmor();
 };
