@@ -36,4 +36,5 @@ public:
 
 	std::unique_ptr<Item> DropItem();
 
+	std::unique_ptr<Item> DropEq();
 };

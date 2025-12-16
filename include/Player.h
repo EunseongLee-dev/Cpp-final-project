@@ -46,9 +46,19 @@ public:
 
 	void PrintInventory() const;
 
-	void EquipItemFromInventory(int index);
+	//void EquipItemFromInventory(int index);
 	
 	void UnequipWeapon();
 
 	void UnequipArmor();
+
+	void Heal(int amount);
+
+	void Mana(int amount);
+
+	void ATKUP(int amount);
+
+	void EquipWeapon(int atkbonus);
+
+	void EquipArmor(int hpbonus);
 };
