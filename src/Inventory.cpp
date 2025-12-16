@@ -45,10 +45,8 @@ void Inventory::PrintInventory() const
 		Item* it = Items[i].get();
 		std::cout << "[" << i << "] "
 			<< it->GetName() << " / "
-			<< it->GetType() << " / "
+			<< it->GetItemTypeName() << " / "
 			<< it->GetValue() << "\n";
-
-		
 	}
 	std::cout << "\n";
 }

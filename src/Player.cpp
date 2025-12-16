@@ -118,8 +118,6 @@ void Player::Skill(Monster& target)
 
 void Player::Attack(Monster& target)
 {
-	
-
 	static std::random_device rd;
 	static std::mt19937 mt(rd());
 
@@ -159,53 +157,7 @@ void Player::TakeDamage(int damage)
 
 void Player::UseItem(Item* item)
 {
-	std::string Type = item->GetType();
-
-	if (Type == "Heal")
-	{
-		Hp += item->GetValue();
-		if (Hp > MaxHp)
-		{
-			Hp = MaxHp;
-		}
-		std::cout << "플레이어 " << Name << "이 '" << item->GetName() << "'을 사용했습니다.\n"
-			<< "Hp +" << item->GetValue()
-			<< " (Hp: " << Hp << " / " << MaxHp << ")\n\n";
-	}
-	else if (Type == "Mana")
-	{
-		Mp += item->GetValue();
-		if (Mp > MaxMp)
-		{
-			Mp = MaxMp;
-		}
-		std::cout << "플레이어 " << Name << "이 '" << item->GetName() << "'을 사용했습니다.\n"
-			<< "Mp +" << item->GetValue() 
-			<< " (Mp: " << Mp << " / " << MaxHp << ")\n\n";
-	}
-	else if (Type == "Atk")
-	{
-		ATK += item->GetValue();
-		std::cout << "플레이어 " << Name << "이 '" << item->GetName() << "'을 사용했습니다.\n"
-			<< "공격력 +" << item->GetValue()
-			<< " (ATK: " << ATK << ")\n\n";
-	}
-	else if (Type == "Weapon")
-	{
-		ATK += item->GetATKBonus();
-		std::cout << "플레이어 " << Name << "이 '" << item->GetName() << "'을 착용했습니다.\n"
-			<< "공격력 +" << item->GetValue()
-			<< " (ATK: " << ATK << ")\n\n";
-	}
-	else if (Type == "Armor")
-	{
-		MaxHp += item->GetHpBonus();
-		std::cout << "플레이어 " << Name << "이 '" << item->GetName() << "'을 착용했습니다.\n"
-			<< "MaxHp +" << item->GetValue()
-			<< " (Hp: " << Hp << " / " << MaxHp << ")\n\n";
-	}
-
-	
+	item->Use(*this);
 }
 
 void Player::AddItem(std::unique_ptr<Item> item)
@@ -231,66 +183,70 @@ void Player::PrintInventory() const
 	inventory.PrintInventory();
 }
 
-void Player::EquipItemFromInventory(int index)
-{
-	if (index < 0 || index >= inventory.Count())
-	{
-		std::cout << "잘못된 인덱스입니다.\n\n";
-		return;
-	}
+//void Player::EquipItemFromInventory(int index)
+// 	// 함수 전체 로직 수정 예정 
+//{
+//	if (index < 0 || index >= inventory.Count())
+//	{
+//		std::cout << "잘못된 인덱스입니다.\n\n";
+//		return;
+//	}
 	
-	Item* item = inventory.GetItem(index);
-	if (!item->IsEquipable())
-	{
-		std::cout << "착용 불가능한 아이템 입니다.\n\n";
-		return;
-	}
-	if (item->GetType() == "Weapon")
-	{
-		if (equippedWeapon)
-		{
-			int menu;
-			std::cout << "현재 착용 중인 무기가 있습니다.\n"
-				<< "1. 착용 중인 장비를 교체한다: \n"
-				<< "2. 이전 메뉴: ";
-			std::cin >> menu;
-
-			if (menu == 1)
-			{
-				UnequipWeapon();
-				UseItem(item);
-				return;
-			}
-			else if (menu == 2)
-			{
-				return;
-			}
-		}
-	}
-	if (item->GetType() == "Armor")
-	{
-		if (equippedArmor)
-		{
-			int menu;
-			std::cout << "현재 착용 중인 무기가 있습니다.\n"
-				<< "1. 착용 중인 장비를 교체한다: \n"
-				<< "2. 이전 메뉴: ";
-			std::cin >> menu;
-
-			if (menu == 1)
-			{
-				UnequipArmor();
-				UseItem(item);
-				return;
-			}
-			else if (menu == 2)
-			{
-				return;
-			}
-		}
-	}
-	UseItem(item);
-}
+//	Item* item = inventory.GetItem(index);
+// 
+//	if (!item->IsEquipable())
+//	{
+//		std::cout << "착용 불가능한 아이템 입니다.\n\n";
+//		return;
+//	}
+//	if (item->GetType() == "Weapon")
+//	{
+//		if (equippedWeapon)
+//		{
+//			int menu;
+//			std::cout << "현재 착용 중인 무기가 있습니다.\n"
+//				<< "1. 착용 중인 장비를 교체한다: \n"
+//				<< "2. 이전 메뉴: ";
+//			std::cin >> menu;
+//
+//			if (menu == 1)
+//			{
+//				UnequipWeapon();
+//				UseItem(item);
+//				return;
+//			}
+//			else if (menu == 2)
+//			{
+//				return;
+//			}
+//		}
+//	}
+//	if (item->GetType() == "Armor")
+//	{
+//		if (equippedArmor)
+//		{
+//			int menu;
+//			std::cout << "현재 착용 중인 무기가 있습니다.\n"
+//				<< "1. 착용 중인 장비를 교체한다: \n"
+//				<< "2. 이전 메뉴: ";
+//			std::cin >> menu;
+//
+//			if (menu == 1)
+//			{
+//				UnequipArmor();
+//				UseItem(item);
+//				return;
+//			}
+//			else if (menu == 2)
+//			{
+//				return;
+//			}
+//		}
+//	}
+//	UseItem(item);
+//
+//
+//}
 
 void Player::UnequipWeapon()
 {
@@ -302,6 +258,44 @@ void Player::UnequipArmor()
 {
 	MaxHp = BaseMaxHp;
 	inventory.AddItem(std::move(equippedArmor));
+}
+
+void Player::Heal(int amount)
+{
+	Hp += amount;
+	if (Hp > MaxHp)
+	{
+		Hp = MaxHp;
+	}
+	std::cout << " (Hp: " << Hp << " / " << MaxHp << ")\n\n";
+}
+
+void Player::Mana(int amount)
+{
+	Mp += amount;
+	if (Mp > MaxMp)
+	{
+		Mp = MaxMp;
+	}
+	std::cout << " (Mp: " << Mp << " / " << MaxHp << ")\n\n";
+}
+
+void Player::ATKUP(int amount)
+{
+	ATK += amount;
+	std::cout << " (ATK: " << ATK << ")\n\n";
+}
+
+void Player::EquipWeapon(int atkbonus)
+{
+	ATK += atkbonus;
+	std::cout << " (ATK: " << ATK << ")\n\n";
+}
+
+void Player::EquipArmor(int hpbonus)
+{
+	MaxHp += hpbonus;
+	std::cout << " (Hp: " << Hp << " / " << MaxHp << ")\n\n";
 }
 
 

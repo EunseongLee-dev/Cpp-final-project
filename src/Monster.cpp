@@ -165,22 +165,43 @@ std::unique_ptr<Item> Monster::DropItem()
 	switch (choice)
 	{
 	case 0:
-		return std::make_unique<Item>("체력 포션", "Heal", 30);
+		return std::make_unique<Consumable>("체력 포션", ConsumableType::Heal, 30);
 		break;
 		
 	case 1:
-		return std::make_unique<Item>("마나 포션", "Mana", 20);
+		return std::make_unique<Consumable>("마나 포션", ConsumableType::Mana, 20);
 		break;
 
 	case 2:
-		return std::make_unique<Item>("공격력 증가 포션", "Atk", 10);
+		return std::make_unique<Consumable>("공격력 증가 포션", ConsumableType::Atk, 10);
 		break;
-
-	default:
-		return std::make_unique<Item>("기본 아이템", "None", 0);
 	}
+}
+
+std::unique_ptr<Item> Monster::DropEq()
+{
+	static std::random_device rd;
+	static std::mt19937 mt(rd());
 
 	std::uniform_int_distribution<int> eq(0, 4);
 	auto eqchoice = eq(mt);
-}
 
+	switch (eqchoice)
+	{
+	case 0:
+		return std::make_unique<Weapon>("단검", 10);
+		break;
+
+	case 1:
+		return std::make_unique<Weapon>("장검", 15);
+		break;
+
+	case 2:
+		return std::make_unique<Armor>("가죽갑옷", 20);
+		break;
+
+	case 3:
+		return std::make_unique<Armor>("철갑옷", 40);
+		break;
+	}
+}
