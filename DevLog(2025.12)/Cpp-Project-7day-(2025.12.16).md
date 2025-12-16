@@ -53,11 +53,6 @@ void Player::UseItem(Item* item)
 
 ## 3. Consumable(소비 아이템) 처리 방식
 
-### 고민 지점
-- 포션 타입이 여러 개 (Heal / Mana / ATK)
-- 타입마다 함수를 나눌 것인가?
-
-### 선택한 방식
 ```cpp
 void Consumable::Use(Player& player)
 {
@@ -100,26 +95,7 @@ ItemType : 알 수 없는 재정의 지정자
 
 ---
 
-## 5. Item 추상 클래스 인스턴스화 에러
-
-### 에러
-```
-C2259: Item: 추상 클래스를 인스턴스화 할 수 없습니다
-```
-
-### 원인
-- `Item`에 순수 가상 함수 존재
-- Inventory / Factory 쪽에서 `Item` 직접 생성 시도
-
-### 해결
-- Item 직접 생성 코드 제거
-- 항상 `Weapon`, `Armor`, `Consumable` 같은 **구현 클래스만 생성**
-
-👉 Item은 **인터페이스 역할만 담당**
-
----
-
-## 6. Inventory 출력 시 Value가 0으로 나오던 문제 (핵심)
+## 5. Inventory 출력 시 Value가 0으로 나오던 문제 (핵심)
 
 ### 현상
 - 이름 / 타입 정상 출력
@@ -129,8 +105,6 @@ C2259: Item: 추상 클래스를 인스턴스화 할 수 없습니다
 ```cpp
 int Item::Value;  // 부모 클래스 값만 출력 중
 ```
-
-실제 의미 있는 값은 자식 클래스에 있었음.
 
 ### 해결 방법 (최종 선택)
 ```cpp
