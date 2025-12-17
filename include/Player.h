@@ -46,11 +46,15 @@ public:
 
 	void PrintInventory() const;
 
-	//void EquipItemFromInventory(int index);
-	
-	void UnequipWeapon();
+	void EquipItemFromInventory(int index);
 
-	void UnequipArmor();
+	void EquippWeapon(int index);
+	
+	void TryequipWeapon(Weapon* weapon);
+
+	void EquippArmor(int index);
+
+	void TryequipArmor(Armor* armor);
 
 	void Heal(int amount);
 

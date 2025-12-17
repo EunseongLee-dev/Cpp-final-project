@@ -17,7 +17,7 @@ public:
 
 	void AddItem(std::unique_ptr<Item> item);
 
-	void RemoveItem(size_t index);
+	std::unique_ptr<Item> RemoveItem(size_t index);
 
 	Item* GetItem(size_t index) const;
 
