@@ -7,7 +7,7 @@
 
 int main()
 {
-	Player* playr = new Player("¿µ¿õ", 100, 60, 15);
+	Player* playr = new Player("¿µ¿õ", 300, 60, 15);
 	Monster* slime = new Monster("½½¶óÀÓ", 40, 30, 10);
 
 	std::vector<Monster*> monst;

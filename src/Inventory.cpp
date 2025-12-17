@@ -12,15 +12,16 @@ void Inventory::AddItem(std::unique_ptr<Item> item)
 	Items.emplace_back(std::move(item));
 }
 
-void Inventory::RemoveItem(size_t index)
+std::unique_ptr<Item> Inventory::RemoveItem(size_t index)
 {
 	if (index >= Items.size())
 	{
 		std::cout << "잘못된 인덱스입니다.\n\n";
-		return;
+		return nullptr;
 	}
 	std::unique_ptr<Item> item = std::move(Items[index]);
 	Items.erase(Items.begin() + index);
+	return item;
 }
 
 Item* Inventory::GetItem(size_t index) const

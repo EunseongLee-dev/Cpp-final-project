@@ -20,8 +20,6 @@ void GameManager::StartGame()
 	PrintStatus();
 
 	GameLoop();
-
-
 }
 
 void GameManager::GameLoop()
@@ -35,7 +33,6 @@ void GameManager::GameLoop()
 			break;
 		}
 		ProcessTurn();
-		
 	}
 }
 
@@ -83,7 +80,7 @@ void GameManager::ProcessTurn()
 			int item;
 			std::cout << "\n착용 할 장비 번호: ";
 			std::cin >> item;
-			Playerr->UseItemFromInventory(item);
+			Playerr->EquipItemFromInventory(item);
 		}
 		else if (menu == 3)
 		{
@@ -131,23 +128,33 @@ void GameManager::PrintStatus() const
 
 void GameManager::GiveRandomItem()
 {
-	auto drop = Monsterr[0]->DropItem();
+	auto codrop = Monsterr[0]->DropItem();
+	auto eqdrop = Monsterr[0]->DropEq();
 
 	static std::random_device rd;
 	static std::mt19937 mt(rd());
 
-	std::uniform_int_distribution<int> dist(0, 1);
+	std::uniform_int_distribution<int> chance(1, 100);
 
-	if (dist(mt) == 0)
+	if (chance(mt) <= 80)
 	{
-		std::cout << drop->GetName() << "아이템을 드랍했습니다.\n\n";
-		Playerr->AddItem(std::move(drop));
+		std::cout << codrop->GetName() << "아이템을 드랍했습니다.\n\n";
+		Playerr->AddItem(std::move(codrop));
 	}
-	else if (dist(mt) == 1)
+	else
 	{
 		std::cout << "획득한 아이템이 없습니다.\n\n";
 	}
 
+	if (chance(mt) <= 30)
+	{
+		std::cout << eqdrop->GetName() << "아이템을 드랍했습니다.\n\n";
+		Playerr->AddItem(std::move(eqdrop));
+	}
+	else
+	{
+		std::cout << "획득한 아이템이 없습니다.\n\n";
+	}
 }
 
 

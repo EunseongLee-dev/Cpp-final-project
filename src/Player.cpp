@@ -183,81 +183,113 @@ void Player::PrintInventory() const
 	inventory.PrintInventory();
 }
 
-//void Player::EquipItemFromInventory(int index)
-// 	// 함수 전체 로직 수정 예정 
-//{
-//	if (index < 0 || index >= inventory.Count())
-//	{
-//		std::cout << "잘못된 인덱스입니다.\n\n";
-//		return;
-//	}
-	
-//	Item* item = inventory.GetItem(index);
-// 
-//	if (!item->IsEquipable())
-//	{
-//		std::cout << "착용 불가능한 아이템 입니다.\n\n";
-//		return;
-//	}
-//	if (item->GetType() == "Weapon")
-//	{
-//		if (equippedWeapon)
-//		{
-//			int menu;
-//			std::cout << "현재 착용 중인 무기가 있습니다.\n"
-//				<< "1. 착용 중인 장비를 교체한다: \n"
-//				<< "2. 이전 메뉴: ";
-//			std::cin >> menu;
-//
-//			if (menu == 1)
-//			{
-//				UnequipWeapon();
-//				UseItem(item);
-//				return;
-//			}
-//			else if (menu == 2)
-//			{
-//				return;
-//			}
-//		}
-//	}
-//	if (item->GetType() == "Armor")
-//	{
-//		if (equippedArmor)
-//		{
-//			int menu;
-//			std::cout << "현재 착용 중인 무기가 있습니다.\n"
-//				<< "1. 착용 중인 장비를 교체한다: \n"
-//				<< "2. 이전 메뉴: ";
-//			std::cin >> menu;
-//
-//			if (menu == 1)
-//			{
-//				UnequipArmor();
-//				UseItem(item);
-//				return;
-//			}
-//			else if (menu == 2)
-//			{
-//				return;
-//			}
-//		}
-//	}
-//	UseItem(item);
-//
-//
-//}
-
-void Player::UnequipWeapon()
+void Player::EquipItemFromInventory(int index)
 {
-	ATK = BaseATK;
-	inventory.AddItem(std::move(equippedWeapon));
+
+	if (index < 0 || index >= inventory.Count())
+	{
+		std::cout << "잘못된 인덱스입니다.\n\n";
+		return;
+	}
+
+	Item* item = inventory.GetItem(index);
+
+	if (!item->IsEquipable())
+	{
+		std::cout << "착용 불가능한 아이템 입니다.\n\n";
+		return;
+	}
+
+	if (auto weapon = dynamic_cast<Weapon*>(item))
+	{
+		if (!equippedWeapon)
+		{
+			EquipWeapon(index);
+		}
+
+		else if (equippedWeapon)
+		{
+			TryequipWeapon(weapon);
+		}
+	}
+ 
+	if (auto armor = dynamic_cast<Armor*>(item))
+	{
+		if (!equippedArmor)
+		{
+			EquipArmor(index);
+		}
+
+		else if (equippedArmor)
+		{
+			TryequipArmor(armor);
+		}
+	}
 }
 
-void Player::UnequipArmor()
+void Player::EquippWeapon(int index)
 {
-	MaxHp = BaseMaxHp;
-	inventory.AddItem(std::move(equippedArmor));
+	auto item = inventory.RemoveItem(index);
+
+	if (auto weapon = dynamic_cast<Weapon*>(item.get()))
+	{
+		equippedWeapon = std::unique_ptr<Weapon>(static_cast<Weapon*>(item.release()));
+	}
+	equippedWeapon->Use(*this);
+}
+
+void Player::TryequipWeapon(Weapon* weapon)
+{
+	
+	int menu;
+	std::cout << "현재 착용 중인 무기가 있습니다.\n"
+		<< "1. 착용 중인 장비를 교체한다: \n"
+		<< "2. 이전 메뉴: ";
+	std::cin >> menu;
+
+	if (menu == 1)
+	{
+		ATK = BaseATK;
+		inventory.AddItem(std::move(equippedWeapon));
+		UseItem(weapon);
+		return;
+	}
+	else if (menu == 2)
+	{
+		return;
+	}
+}
+
+void Player::EquippArmor(int index)
+{
+	auto item = inventory.RemoveItem(index);
+
+	if (auto weapon = dynamic_cast<Armor*>(item.get()))
+	{
+		equippedArmor = std::unique_ptr<Armor>(static_cast<Armor*>(item.release()));
+	}
+	equippedArmor->Use(*this);
+}
+
+void Player::TryequipArmor(Armor* armor)
+{
+	int menu;
+	std::cout << "현재 착용 중인 무기가 있습니다.\n"
+		<< "1. 착용 중인 장비를 교체한다: \n"
+		<< "2. 이전 메뉴: ";
+	std::cin >> menu;
+
+	if (menu == 1)
+	{
+		MaxHp = BaseMaxHp;
+		inventory.AddItem(std::move(equippedArmor));
+		UseItem(armor);
+		return;
+	}
+	else if (menu == 2)
+	{
+		return ;
+	}
 }
 
 void Player::Heal(int amount)
